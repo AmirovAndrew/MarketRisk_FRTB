@@ -1,0 +1,234 @@
+/* ==========================================================================
+   FRTB Market Risk Calculator - Main Stylesheet
+   ========================================================================== */
+
+/* --- Global Styles & Design Tokens (CSS Variables) --- */
+:root {
+    --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    
+    --color-bg-page: #f4f7f9;
+    --color-bg-card: #ffffff;
+    --color-bg-subtle: #f8fafc;
+    --color-bg-hover: #eef2f7;
+
+    --color-text-primary: #333;
+    --color-text-secondary: #555;
+    --color-heading: #1a253c;
+    --color-heading-secondary: #2c3e50;
+    --color-accent: #54a0ff;
+
+    --color-border-primary: #e2e8f0;
+    --color-border-strong: #e0e0e0;
+    --color-border-dashed: #dbe1e8;
+
+    --border-radius: 8px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-sans);
+    background-color: var(--color-bg-page);
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: 20px;
+}
+
+/* --- Typography --- */
+h1 {
+    color: var(--color-heading);
+    text-align: center;
+    border-bottom: 2px solid var(--color-border-strong);
+    padding-bottom: 15px;
+    margin: 0 0 20px 0;
+}
+
+h2 {
+    color: var(--color-heading-secondary);
+    margin-top: 0;
+    border-bottom: 1px solid var(--color-border-primary);
+    padding-bottom: 10px;
+}
+
+/* --- Layout Containers --- */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    background: var(--color-bg-card);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* --- Components: Card --- */
+.card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.summary-card .total-charge {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: var(--color-heading-secondary);
+    text-align: center;
+    margin-top: 15px;
+}
+
+.chart-card {
+    position: relative;
+    height: 400px;
+}
+
+/* --- Components: Table --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border-primary);
+}
+
+th {
+    background-color: var(--color-bg-subtle);
+    font-weight: 600;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.sub-item td {
+    padding-left: 30px;
+    font-style: italic;
+    color: var(--color-text-secondary);
+}
+
+.total-row td {
+    background-color: var(--color-bg-subtle);
+    border-top: 2px solid var(--color-border-primary);
+    font-weight: bold;
+}
+
+/* --- Report-Specific Styles --- */
+.report-meta {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--color-text-secondary);
+}
+
+.report-meta span {
+    margin: 0 15px;
+}
+
+.sbm-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.sbm-item {
+    background-color: var(--color-bg-subtle);
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid var(--color-border-primary);
+}
+
+.sbm-item h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+}
+
+.sbm-total {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--color-heading-secondary);
+    margin: 5px 0;
+}
+
+.sbm-sub-details {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* === STYLES FOR THE UPLOAD PAGE (index.html) === */
+.upload-container {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 40px;
+    background: var(--color-bg-card);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+.upload-container .subtitle {
+    color: var(--color-text-secondary);
+    margin-bottom: 30px;
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background-color: var(--color-bg-subtle);
+    border: 2px dashed var(--color-border-dashed);
+    border-radius: 6px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.file-label:hover {
+    background-color: var(--color-bg-hover);
+    border-color: var(--color-accent);
+}
+
+.file-name-display {
+    display: block;
+    margin-top: 15px;
+    font-style: italic;
+    color: var(--color-text-primary);
+}
+
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-top: 30px;
+    background-color: var(--color-heading-secondary);
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #3d556d; /* A slightly lighter shade for hover */
+}
