@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRTB Market Risk Calculator</title>
+    <!-- Link to the same stylesheet used by the results page -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="upload-container">
+        <h1>FRTB Market Risk Calculator</h1>
+        <p class="subtitle">
+            Upload a CSV or Excel file with your positions to calculate the capital charge under the Sensitivities-Based Approach.
+        </p>
+        
+        <form method="post" action="/calculate" enctype="multipart/form-data" class="upload-form">
+            <!-- 
+              The actual file input is hidden. The <label> acts as our custom, stylable button.
+            -->
+            <input type="file" name="file" id="file-upload" class="file-input" required>
+            
+            <label for="file-upload" class="file-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span>Choose a File...</span>
+            </label>
+
+            <span id="file-name-display" class="file-name-display">No file selected</span>
+            
+            <input type="submit" value="Calculate Risk" class="submit-btn">
+        </form>
+    </div>
+
+    <script>
+        // This script updates the "No file selected" text with the actual filename.
+        const fileInput = document.getElementById('file-upload');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                fileNameDisplay.textContent = fileInput.files[0].name;
+            } else {
+                fileNameDisplay.textContent = 'No file selected';
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Data from Flask, available to all charts
+    const results = {{ results | tojson }};
+    const riskClassNames = {{ risk_class_names | tojson }};
+
+    // ========================================================================
+    // Chart 1: Capital Contribution (Doughnut Chart)
+    // ========================================================================
+    const capitalBreakdownCtx = document.getElementById('capitalBreakdownChart').getContext('2d');
+    new Chart(capitalBreakdownCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Sensitivity-based (SBM)', 'Default Risk (DRC)', 'Residual Risk (RRAO)'],
+            datasets: [{
+                label: 'Capital Charge Contribution',
+                data: [
+                    results.sbm_charge, 
+                    results.drc_charge, 
+                    results.rrao_charge
+                ],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 206, 86, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: false }
+            }
+        }
+    });
+
+    // ========================================================================
+    // Chart 2: SBM Charge by Risk Class (Bar Chart) - CORRECTED LOGIC
+    // ========================================================================
+    const sbmDetails = results.sbm_details;
+
+    // --- Corrected Data Preparation ---
+    // 1. Create a single, filtered array of [label, value] pairs.
+    const filteredSbmData = Object.entries(sbmDetails)
+        .filter(([rc, details]) => details.total_delta_vega > 0)
+        .map(([rc, details]) => ({
+            label: riskClassNames[rc] || rc, // Get full name or fall back to code
+            value: details.total_delta_vega
+        }));
+
+    // 2. Create the final labels and data arrays from the single source.
+    const sbmLabels = filteredSbmData.map(item => item.label);
+    const sbmDataPoints = filteredSbmData.map(item => item.value);
+
+    // 3. Create the chart.
+    const sbmRiskClassCtx = document.getElementById('sbmRiskClassChart').getContext('2d');
+    new Chart(sbmRiskClassCtx, {
+        type: 'bar',
+        data: {
+            labels: sbmLabels,
+            datasets: [{
+                label: 'SBM Charge (Delta + Vega)',
+                data: sbmDataPoints,
+                backgroundColor: 'rgba(26, 188, 156, 0.7)',
+                borderColor: 'rgba(26, 188, 156, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y', // Horizontal bars are great for long labels
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                title: { display: false }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            // Format large numbers for readability
+                            if (value >= 1e6) return (value / 1e6).toFixed(1) + 'M';
+                            if (value >= 1e3) return (value / 1e3).toFixed(1) + 'K';
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>

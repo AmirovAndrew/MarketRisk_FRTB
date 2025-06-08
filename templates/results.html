@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRTB-SBA Market Risk Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Load the Chart.js library in the head -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>BASEL III/IV MARKET RISK CAPITAL CALCULATION REPORT (FRTB SBA)</h1>
+        <div class="report-meta">
+            <span>Calculation Date: {{ results.calculation_date }}</span>
+            <span>Base Currency: {{ results.base_currency }}</span>
+            <span>Positions Processed: {{ "{:,}".format(results.positions_processed) }}</span>
+        </div>
+
+        <div class="grid-container">
+            <div class="card summary-card">
+                <h2>Executive Summary</h2>
+                <p>Total Market Risk Capital Charge</p>
+                <div class="total-charge">
+                    {{ "{:,.2f}".format(results.total_capital_charge) }} {{ results.base_currency }}
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <h2>Capital Contribution</h2>
+                <canvas id="capitalBreakdownChart"></canvas>
+            </div>
+
+            <div class="card chart-card">
+                <h2>SBM Charge by Risk Class</h2>
+                <canvas id="sbmRiskClassChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Component Breakdown</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Charge ({{ results.base_currency }})</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sensitivity-based Method (SBM)</td>
+                        <td>{{ "{:,.2f}".format(results.sbm_charge) }}</td>
+                        <td>{{ "{:.1f}%".format(results.sbm_charge * 100 / results.total_capital_charge if results.total_capital_charge else 0) }}</td>
+                    </tr>
+                    <tr class="sub-item">
+                        <td>- Delta Charge</td>
+                        <td>{{ "{:,.2f}".format(results.delta_charge_total) }}</td>
+                        <td></td>
+                    </tr>
+                    <tr class="sub-item">
+                        <td>- Vega Charge</td>
+                        <td>{{ "{:,.2f}".format(results.vega_charge_total) }}</td>
+                        <td></td>
+                    </tr>
+                    <tr class="sub-item">
+                        <td>- Curvature Charge</td>
+                        <td>{{ "{:,.2f}".format(results.curvature_charge_total) }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Default Risk Charge (DRC)</td>
+                        <td>{{ "{:,.2f}".format(results.drc_charge) }}</td>
+                        <td>{{ "{:.1f}%".format(results.drc_charge * 100 / results.total_capital_charge if results.total_capital_charge else 0) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Residual Risk Add-On (RRAO)</td>
+                        <td>{{ "{:,.2f}".format(results.rrao_charge) }}</td>
+                        <td>{{ "{:.1f}%".format(results.rrao_charge * 100 / results.total_capital_charge if results.total_capital_charge else 0) }}</td>
+                    </tr>
+                    
+                    <!-- CORRECTION: Added total row for clarity and consistency -->
+                    <tr class="total-row">
+                        <td><strong>Total Market Risk Capital</strong></td>
+                        <td><strong>{{ "{:,.2f}".format(results.total_capital_charge) }}</strong></td>
+                        <td><strong>100.0%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="grid-container">
+            <div class="card">
+                <h2>Curvature Risk Breakdown</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Risk Class</th>
+                            <th>Charge ({{ results.base_currency }})</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rc, charge in results.curvature_by_risk_class.items() %}
+                            {% if charge > 0 %}
+                            <tr>
+                                <td>{{ risk_class_names.get(rc, rc) }}</td>
+                                <td>{{ "{:,.2f}".format(charge) }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                        <tr class="total-row">
+                            <td><strong>Total Curvature</strong></td>
+                            <td><strong>{{ "{:,.2f}".format(results.curvature_charge_total) }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="card">
+                <h2>Default Risk Charge (DRC) Details</h2>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Gross Jump-to-Default Long</td>
+                            <td>{{ "{:,.2f}".format(results.drc_details.gross_jtd_long) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Gross Jump-to-Default Short</td>
+                            <td>{{ "{:,.2f}".format(results.drc_details.gross_jtd_short) }}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Final DRC Charge</strong></td>
+                            <td><strong>{{ "{:,.2f}".format(results.drc_charge) }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>SBM Breakdown by Risk Class (Delta + Vega)</h2>
+            <div class="sbm-grid">
+                {% for rc, details in results.sbm_details.items() %}
+                    {% if details.total_delta_vega > 0 %}
+                    <div class="sbm-item">
+                        <h3>{{ risk_class_names.get(rc, rc) }}</h3>
+                        <p class="sbm-total">{{ "{:,.2f}".format(details.total_delta_vega) }}</p>
+                        <div class="sbm-sub-details">
+                            <span>Delta: {{ "{:,.2f}".format(details.delta) }}</span>
+                            <span>Vega: {{ "{:,.2f}".format(details.vega) }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Include your chart-drawing script at the very end -->
+    {% include 'charts.html' %}
+</body>
+</html>
