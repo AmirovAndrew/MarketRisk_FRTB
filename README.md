@@ -18,9 +18,9 @@ The calculation engine is designed to be modular, with all regulatory parameters
     * Residual Risk Add-On (RRAO)
 * **Interactive Web Interface:** A clean and modern UI allows users to easily upload files and view results.
 * **Dynamic Reporting:** Generates a professional risk report with data tables and visualizations powered by Chart.js.
-* **Flexible File Support:** Accepts portfolio data in both **CSV (`.csv`)** and **Excel (`.xlsx`, `.xls`)** formats[^1].
+* **Flexible File Support:** Accepts portfolio data in both **CSV (`.csv`)** and **Excel (`.xlsx`, `.xls`)** formats.
 * **Robust Data Handling:** The application gracefully handles files with missing optional columns by applying default values.
-* **Centralized Parameters:** All FRTB risk weights and parameters are stored in a single Python dictionary, making them easy to configure[^1].
+* **Centralized Parameters:** All FRTB risk weights and parameters are stored in a single Python dictionary, making them easy to configure.
 
 
 ## 3. Installation
@@ -67,7 +67,7 @@ Your final project structure should look like this:
 
 ### Step 2: Create a Virtual Environment
 
-It is highly recommended to use a virtual environment to manage project dependencies[^5].
+It is highly recommended to use a virtual environment to manage project dependencies.
 
 ```bash
 # Create the virtual environment
@@ -103,7 +103,7 @@ pip install -r requirements.txt
 
 ## 4. Running the Application
 
-With the dependencies installed, you can run the application using the Flask command-line interface[^3][^4].
+With the dependencies installed, you can run the application using the Flask command-line interface.
 
 ```bash
 # Ensure you are in the root project directory (frtb-calculator)
@@ -133,7 +133,7 @@ Your input file must contain a header row with the following column names. The c
 
 ### Required Columns
 
-These columns must be present in your file[^1].
+These columns must be present in your file.
 
 
 | Column Name | Type | Description |
@@ -147,7 +147,7 @@ These columns must be present in your file[^1].
 
 ### Optional Columns
 
-If these columns are not present, the application will use default values[^1].
+If these columns are not present, the application will use default values.
 
 
 | Column Name | Type | Description |
